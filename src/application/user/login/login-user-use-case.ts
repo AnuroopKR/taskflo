@@ -17,7 +17,7 @@ export class UserLoginUseCase{
         const {email,password}=data
         const user=await this.userRepo.findByEmail(email)
         if(!user) throw new NotFoundError("user not found")
-        const isMatch=await this.passwordHasher.compare(password,user.password)
+        const isMatch=await this.passwordHasher.compare(password,user.password??"")
         if(!isMatch) throw new UnauthorizedError("invalied credential")
         
         const accessToken=this.tokenService.generateAccessToken({userId:user.id,email:user.email,role:user.role})

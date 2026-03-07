@@ -23,7 +23,7 @@ model User {
   name      String
   email     String   @unique
   companyId String
-  password  String 
+  password  String? 
   role      RoleType
 
   company   Company  @relation(fields: [companyId], references: [id])

@@ -7,15 +7,15 @@ export class User{
         public companyId:string,
         public email:string,
         public name:string,
-        public password:string,
-        public role:RoleType
+        public role:RoleType,
+        public password?:string,
+        
         
     ){
         this.name = name.trim(); // Logic: Names shouldn't have trailing spaces
         this.createdAt = new Date();
         this.updatedAt = new Date();
         this.validate();
-        this.validate()
     }
 
     private validate(){

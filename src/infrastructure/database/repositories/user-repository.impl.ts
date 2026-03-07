@@ -9,19 +9,19 @@ import { RoleType as PrismaRoleType} from "../../../generated/prisma/enums";
 export class userRepositoryImpl implements IUserRepository{
   private mapToEntity(record: {
     id: string;
-        companyId: string;
+    companyId: string;
     name: string;
     email: string;
-    password:string;
     role: PrismaRoleType;
+    password:string|null;
   }): User {
   return new User(
     record.id,
-        record.companyId,
+    record.companyId,
     record.name,
     record.email,
-    record.password,
-    record.role as DomainRoleType
+    record.role as DomainRoleType,
+    record.password??undefined,
   );
   }
   async create(data: userProps):Promise<User> {

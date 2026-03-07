@@ -3,7 +3,7 @@ import { ICompanyRepository } from "../../../domain/repositories/company-reposit
 import { RegisterRequest } from "./register-company-request.dto";
 import { RegisterResponseDTO } from "./register-company-response.dto";
 import { IUserRepository } from "../../../domain/repositories/user-repository.interface";
-import { ConflictError } from "../../errors/ts";
+import { ConflictError } from "../../errors/conflict.error";
 
 export class companyRegisterUseCase{
 
