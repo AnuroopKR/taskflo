@@ -8,6 +8,7 @@ import { RandomOtpGenerator } from "../infrastructure/security/otp-generator";
 import { NodemailerMailProvider } from "../infrastructure/mail/nodemailer-mail.provider";
 import { OTPRepositoryImpl } from "../infrastructure/database/repositories/otp-repository.impl";
 import { VerifyOtpUseCase } from "../application/auth/verify-otp/verify-otp-use-case";
+import { CreateUserUseCase } from "../application/company/create-user/create-user-use-case";
 
 const companyRepo = new companyRepositoryImpl();
 const userRepo = new userRepositoryImpl();
@@ -35,4 +36,11 @@ export const loginUserUseCase = new UserLoginUseCase(
 
 export const verifyOtpUseCase=new VerifyOtpUseCase(
   otpRepo
+)
+
+export const createUserUSEcase=new CreateUserUseCase(
+  userRepo,
+  otpGenerator,
+  otpRepo,
+   mailProvider,
 )
