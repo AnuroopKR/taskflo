@@ -9,6 +9,7 @@ import { NodemailerMailProvider } from "../infrastructure/mail/nodemailer-mail.p
 import { OTPRepositoryImpl } from "../infrastructure/database/repositories/otp-repository.impl";
 import { VerifyOtpUseCase } from "../application/auth/verify-otp/verify-otp-use-case";
 import { CreateUserUseCase } from "../application/company/create-user/create-user-use-case";
+import { CreateUserPasswordUseCase } from "../application/user/create-user-password/create-user-password-use-case";
 
 const companyRepo = new companyRepositoryImpl();
 const userRepo = new userRepositoryImpl();
@@ -43,4 +44,10 @@ export const createUserUSEcase=new CreateUserUseCase(
   otpGenerator,
   otpRepo,
    mailProvider,
+)
+
+export const createUserPassword=new CreateUserPasswordUseCase(
+  otpRepo,
+  userRepo,
+  passwordHasher
 )

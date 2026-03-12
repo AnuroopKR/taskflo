@@ -46,4 +46,10 @@ export class userRepositoryImpl implements IUserRepository{
     const userRecord = await prisma.user.findUnique({ where: { email } });
     return userRecord ? this.mapToEntity(userRecord) : null;
   }
+  async updatePassword(email: string, password: string): Promise<void> {
+    await prisma.user.update({
+      where: { email: email },
+      data: { password },
+    });
+  }
 }
