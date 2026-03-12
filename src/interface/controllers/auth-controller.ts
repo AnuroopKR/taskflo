@@ -1,12 +1,18 @@
 import { Request, Response } from "express";
 import { companyRegisterUseCase } from "../../application/company/register/register-company.use-case";
-import { loginUserUseCase, registerUseCase } from "../../config/container";
+import {
+  loginUserUseCase,
+  registerUseCase,
+  verifyOtpUseCase,
+} from "../../config/container";
 import { UserLoginUseCase } from "../../application/user/login/login-user-use-case";
+import { VerifyOtpUseCase } from "../../application/auth/verify-otp/verify-otp-use-case";
 
 export class AuthController {
   constructor(
     private registerUseCase: companyRegisterUseCase,
     private loginUseCase: UserLoginUseCase,
+    private verifyOtpUsecase: VerifyOtpUseCase,
   ) {}
 
   register = async (req: Request, res: Response) => {
@@ -48,8 +54,56 @@ export class AuthController {
 
     res.json({ message: "Logged out successfully" });
   }
+
+  verifyotp = async (req: Request, res: Response) => {
+    try {
+      const { email, code } = req.body;
+      if (!email || !code) {
+        return res.status(400).json({
+          success: false,
+          message: "Email and OTP code are required",
+        });
+      }
+      const result = await this.verifyOtpUsecase.execute(email, code);
+
+      return res.status(200).json({
+        success: true,
+        message: "OTP verified successfully",
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error.message === "Invalid OTP") {
+          return res.status(400).json({
+            success: false,
+            message: "Invalid OTP",
+          });
+        }
+
+        if (error.message === "OTP expired") {
+          return res.status(400).json({
+            success: false,
+            message: "OTP expired",
+          });
+        }
+
+        return res.status(500).json({
+          success: false,
+          message: error.message,
+        });
+      }
+
+      return res.status(500).json({
+        success: false,
+        message: "Internal server error",
+      });
+    }
+  };
 }
 
-const authController = new AuthController(registerUseCase, loginUserUseCase);
+const authController = new AuthController(
+  registerUseCase,
+  loginUserUseCase,
+  verifyOtpUseCase,
+);
 
 export { authController };
