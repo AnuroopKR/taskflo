@@ -13,7 +13,6 @@ export class Company{
         this.createdAt = new Date();
         this.updatedAt = new Date();
         this.validate();
-        this.validate()
     }
 
     private validate(){

@@ -39,3 +39,10 @@ model Company {
 
   users     User[]
 }
+
+model OTP {
+  id        Int      @id @default(autoincrement())
+  email     String
+  code      String
+  expiresAt DateTime
+}

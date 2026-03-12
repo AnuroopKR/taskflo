@@ -6,4 +6,5 @@ const route= Router();
 route.post("/", authController.register);
 route.post("/login",authController.login)
 
+
 export default route;
