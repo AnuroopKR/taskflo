@@ -11,10 +11,12 @@ class TaskController{
         try {
             const task=req.body
             const taskData=await this.createTaskUseCase.execute(task)
+            res.status(200).json(taskData)
         } catch (error) {
+            res.status(500).json({message:"internal server error"})
             console.log(111,error)
         }
     }
 }
 
-const taskController=new TaskController(createTaskUseCase)
+export const taskController=new TaskController(createTaskUseCase)
