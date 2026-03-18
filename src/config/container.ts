@@ -10,6 +10,8 @@ import { OTPRepositoryImpl } from "../infrastructure/database/repositories/otp-r
 import { VerifyOtpUseCase } from "../application/auth/verify-otp/verify-otp-use-case";
 import { CreateUserUseCase } from "../application/company/create-user/create-user-use-case";
 import { CreateUserPasswordUseCase } from "../application/user/create-user-password/create-user-password-use-case";
+import { CreateTaskUseCase } from "../application/company/create-task/create-task-use-case";
+import { TaskRepositoryImpl } from "../infrastructure/database/repositories/task-repository.impl";
 
 const companyRepo = new companyRepositoryImpl();
 const userRepo = new userRepositoryImpl();
@@ -19,6 +21,7 @@ const otpGenerator= new RandomOtpGenerator()
 const otpRepo=new OTPRepositoryImpl()
 const tokenService = new JwtService(   process.env.JWT_ACCESS_SECRET || "default_access_secret",
   process.env.JWT_REFRESH_SECRET || "default_refresh_secret");
+const taskRepo=new TaskRepositoryImpl()
 
 export const registerUseCase = new companyRegisterUseCase(
   companyRepo,
@@ -50,4 +53,8 @@ export const createUserPassword=new CreateUserPasswordUseCase(
   otpRepo,
   userRepo,
   passwordHasher
+)
+
+export const createTaskUseCase=new CreateTaskUseCase(
+  taskRepo
 )
