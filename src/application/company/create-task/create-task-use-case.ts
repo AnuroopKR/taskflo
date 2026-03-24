@@ -1,6 +1,6 @@
 import { Task, TaskPriority, TaskStatus } from "../../../domain/entities/task";
 import { ITaskRepository } from "../../../domain/repositories/task-repository.interface";
-import { CreateTaskRequest } from "./create-user-request.dto";
+import { CreateTaskRequest } from "./create-task-request.dto";
 
 
 export class CreateTaskUseCase{
