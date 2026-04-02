@@ -3,6 +3,7 @@ import authRoute from "./interface/routes/auth-route"
 import companyRoute from './interface/routes/company-route'
 import userRoute from './interface/routes/userRoute'
 import taskRoute from './interface/routes/task-route'
+import projectRoute from './interface/routes/projct-route'
 import cors from 'cors'
 const app = express();
 
@@ -17,5 +18,7 @@ app.use("/api/auth",authRoute)
 app.use("/api/company",companyRoute)
 app.use("/api/user",userRoute)
 app.use("/api/task",taskRoute)
+app.use("/api/project",projectRoute)
+
 
 export default app;

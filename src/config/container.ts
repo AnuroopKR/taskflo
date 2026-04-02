@@ -14,6 +14,8 @@ import { CreateTaskUseCase } from "../application/company/create-task/create-tas
 import { TaskRepositoryImpl } from "../infrastructure/database/repositories/task-repository.impl";
 import { UpdateTaskStatusUseCase } from "../application/task/change-status/update-status-use-case";
 import { TaskStatusHistoryRepositoryImpl } from "../infrastructure/database/repositories/task-status-history-repository.impl";
+import { CreateProjectUseCase } from "../application/project/create-project/create-project-use-case";
+import { ProjectRepositoryImpl } from "../infrastructure/database/repositories/project-repository.impl";
 
 const companyRepo = new companyRepositoryImpl();
 const userRepo = new userRepositoryImpl();
@@ -25,6 +27,7 @@ const tokenService = new JwtService(   process.env.JWT_ACCESS_SECRET || "default
   process.env.JWT_REFRESH_SECRET || "default_refresh_secret");
 const taskRepo=new TaskRepositoryImpl()
 const statusRepo=new TaskStatusHistoryRepositoryImpl
+const projectRepo=new ProjectRepositoryImpl
 
 export const registerUseCase = new companyRegisterUseCase(
   companyRepo,
@@ -65,4 +68,8 @@ export const createTaskUseCase=new CreateTaskUseCase(
 export const updateStatusUseCase=new UpdateTaskStatusUseCase(
   taskRepo,
   statusRepo
+)
+
+export const createProjectUseCase=new CreateProjectUseCase(
+  projectRepo
 )

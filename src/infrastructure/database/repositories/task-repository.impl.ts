@@ -1,7 +1,7 @@
 import { Task, TaskStatus as DomainTaskStatus, TaskPriority as DomainTaskPriority } from "../../../domain/entities/task";
 import { prisma } from "../../../config/prisma";
 import { ITaskRepository } from "../../../domain/repositories/task-repository.interface";
-import { TaskStatus as PrismaTaskStatus, TaskPriority as PrismaTaskPriority } from "../../../generated/prisma"
+import { TaskStatus as PrismaTaskStatus, Priority as PrismaTaskPriority } from "../../../generated/prisma"
 
 
 export class TaskRepositoryImpl implements ITaskRepository {
