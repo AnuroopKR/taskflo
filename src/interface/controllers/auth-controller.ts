@@ -24,10 +24,11 @@ export class AuthController {
     }
   };
 
-  async login(req: Request, res: Response) {
+   login=async(req: Request, res: Response)=> {
     try {
-      const { user, accessToken, refreshToken } =
-        await this.loginUseCase.execute(req.body);
+      const { email,password } =req.body
+      console.log(222,email,password)
+      const { user, accessToken, refreshToken } = await this.loginUseCase.execute({email,password});
 
       // Store tokens in HttpOnly cookies
       res.cookie("accessToken", accessToken, {
@@ -45,6 +46,7 @@ export class AuthController {
       // Return user data (without password)
       res.status(200).json({ user });
     } catch (err: any) {
+      console.log(333,err)
       res.status(err.statusCode || 500).json({ message: err.message });
     }
   }

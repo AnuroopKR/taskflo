@@ -5,8 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+ provider = "prisma-client-js"
 }
 
 datasource db {
@@ -30,7 +29,7 @@ enum TaskStatus {
   OVERDUE
 }
 
-enum TaskPriority {
+enum Priority {
   LOW
   MEDIUM
   HIGH
@@ -40,6 +39,14 @@ enum SubmissionStatus {
   APPROVED
   REJECTED
 }
+
+enum ProjectStatus {
+  ACTIVE
+  COMPLETED
+  ON_HOLD
+  CANCELLED
+}
+
 
 ///////////////////////
 // MODELS
@@ -72,6 +79,8 @@ model User {
   submissions   TaskSubmission[] @relation("SubmissionByUser")
   reviews       TaskSubmission[] @relation("ReviewedByAdmin")
   taskStatusHistories TaskStatusHistory[]
+  projects  ProjectMember[]
+  ownedProjects Project[]
 }
 
 model OTP {
@@ -84,10 +93,21 @@ model OTP {
 model Project {
   id        Int      @id @default(autoincrement())
   name      String
+  description String?
   companyId String
   company   Company  @relation(fields: [companyId], references: [id])
 
+  status    ProjectStatus @default(ACTIVE)
+  priority  Priority      @default(MEDIUM)
+
+  startDate DateTime?
+  dueDate   DateTime?
+
+  ownerId   String?
+  owner     User? @relation(fields: [ownerId], references: [id])
+
   tasks     Task[]
+  members   ProjectMember[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -107,7 +127,7 @@ model Task {
   assignee    User?     @relation("TaskAssignee", fields: [assignedTo], references: [id])
 
   status      TaskStatus   @default(PENDING)
-  priority    TaskPriority @default(MEDIUM)
+  priority    Priority @default(MEDIUM)
 
   startDate   DateTime?
   dueDate     DateTime?
@@ -151,4 +171,18 @@ model TaskSubmission {
   reviewStatus SubmissionStatus?
   reviewComment String?
   reviewedAt   DateTime?
+}
+
+model ProjectMember {
+  id        Int     @id @default(autoincrement())
+
+  userId    String
+  projectId Int
+
+  user      User    @relation(fields: [userId], references: [id])
+  project   Project @relation(fields: [projectId], references: [id])
+
+  role      String? // optional (admin, member)
+
+  @@unique([userId, projectId]) // prevents duplicates
 }
