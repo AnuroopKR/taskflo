@@ -15,30 +15,61 @@ export const authMiddleware = (
   try {
     const accessToken = req.cookies.accessToken;
     const refreshToken = req.cookies.refreshToken;
-
+    // 🚫 No tokens
     if (!accessToken && !refreshToken) {
-      return res.status(401).json({ message: "Invalid or expired token" });
+      return res.status(401).json({ message: "Not authenticated" });
     }
 
-    if (!accessToken && refreshToken) {
-      const user = jwtService.verifyRefreshToken(refreshToken);
-      if (!user) {
-        return res.status(401).json({ message: "Invalid or expired token" });
+    // ✅ Try access token first
+    if (accessToken) {
+      const decoded: JwtPayload | null =
+        jwtService.verifyAccessToken(accessToken);
+
+      if (decoded) {
+        (req as any).user = decoded;
+        return next();
       }
-      const newAccessToken = jwtService.generateAccessToken(user);
-      res.cookie("accessToken", newAccessToken, { httpOnly: true });
-      (req as any).user = user;
+      // ❗ If access token invalid → fallback to refresh
+    }
+
+    // 🔄 Use refresh token
+    if (refreshToken) {
+      const decoded: JwtPayload | null =
+        jwtService.verifyRefreshToken(refreshToken);
+
+      if (!decoded) {
+        return res.status(401).json({ message: "Invalid refresh token" });
+      }
+
+      // 🔁 Generate new tokens (rotation)
+      const newAccessToken = jwtService.generateAccessToken({
+        userId: decoded.userId,
+        email: decoded.email,
+        role: decoded.role,
+      });
+      const newRefreshToken = jwtService.generateRefreshToken({
+        userId: decoded.userId,
+        email: decoded.email,
+        role: decoded.role,
+      });
+
+
+      res.cookie("accessToken", newAccessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 15 * 60 * 1000, // 15 minutes
+      });
+      res.cookie("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+
+      (req as any).user = decoded;
       return next();
     }
 
-    const decoded: JwtPayload | null = jwtService.verifyAccessToken(accessToken);
-
-    if (!decoded) {
-      return res.status(401).json({ message: "Invalid or expired token" });
-    }
-
-    (req as any).user = decoded;
-    next();
+    return res.status(401).json({ message: "Authentication failed" });
   } catch (error) {
     console.error("Auth Middleware Error:", error);
     return res.status(401).json({ message: "Authentication failed" });
