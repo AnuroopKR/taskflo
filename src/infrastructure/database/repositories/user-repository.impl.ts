@@ -52,4 +52,12 @@ export class userRepositoryImpl implements IUserRepository{
       data: { password },
     });
   }
+  async findByCompanyId(companyId: string): Promise<User[]> {
+  const userRecords = await prisma.user.findMany({
+    where: { companyId },
+  });
+
+  return userRecords.map((user) => this.mapToEntity(user));
+}
+  
 }
