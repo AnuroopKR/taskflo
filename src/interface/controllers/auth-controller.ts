@@ -3,16 +3,19 @@ import { companyRegisterUseCase } from "../../application/company/register/regis
 import {
   loginUserUseCase,
   registerUseCase,
+  setPasswordUseCase,
   verifyOtpUseCase,
 } from "../../config/container";
 import { UserLoginUseCase } from "../../application/user/login/login-user-use-case";
 import { VerifyOtpUseCase } from "../../application/auth/verify-otp/verify-otp-use-case";
+import { SetpasswordUseCase } from "../../application/auth/set-password/set-password-use-case";
 
 export class AuthController {
   constructor(
     private registerUseCase: companyRegisterUseCase,
     private loginUseCase: UserLoginUseCase,
     private verifyOtpUsecase: VerifyOtpUseCase,
+    private setPasswordUseCase: SetpasswordUseCase,
   ) {}
 
   register = async (req: Request, res: Response) => {
@@ -24,11 +27,12 @@ export class AuthController {
     }
   };
 
-   login=async(req: Request, res: Response)=> {
+  login = async (req: Request, res: Response) => {
     try {
-      const { email,password } =req.body
-      console.log(222,email,password)
-      const { user, accessToken, refreshToken } = await this.loginUseCase.execute({email,password});
+      const { email, password } = req.body;
+      console.log(222, email, password);
+      const { user, accessToken, refreshToken } =
+        await this.loginUseCase.execute({ email, password });
 
       // Store tokens in HttpOnly cookies
       res.cookie("accessToken", accessToken, {
@@ -46,10 +50,10 @@ export class AuthController {
       // Return user data (without password)
       res.status(200).json({ user });
     } catch (err: any) {
-      console.log(333,err)
+      console.log(333, err);
       res.status(err.statusCode || 500).json({ message: err.message });
     }
-  }
+  };
   logout(req: Request, res: Response) {
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
@@ -100,12 +104,39 @@ export class AuthController {
       });
     }
   };
+
+  setPassword = async (req: Request, res: Response) => {
+    try {
+      
+      const result = this.setPasswordUseCase.execute(req.body);
+
+      return res.status(200).json({
+        success: true,
+        message: "OTP verified successfully",
+      });
+    } catch (error) {
+      console.log("Set password error", error);
+      return res.status(500).json({ message: "internal server error" });
+    }
+  };
+
+  verifyToken = async (req: Request, res: Response) => {
+    try {
+      const user = req.user;
+      console.log(888, user);
+      res.status(200).json({ message: "success" });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "internal server error" });
+    }
+  };
 }
 
 const authController = new AuthController(
   registerUseCase,
   loginUserUseCase,
   verifyOtpUseCase,
+  setPasswordUseCase,
 );
 
 export { authController };

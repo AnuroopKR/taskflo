@@ -4,7 +4,7 @@ import {
   IUserRepository,
   userProps,
 } from "../../../domain/repositories/user-repository.interface";
-import { RoleType as PrismaRoleType} from "../../../generated/prisma/enums";
+import { RoleType as PrismaRoleType} from "../../../generated/prisma";
 
 export class userRepositoryImpl implements IUserRepository{
   private mapToEntity(record: {

@@ -37,7 +37,7 @@ export class CreateUserUseCase {
 
     // store otp to db
     await this.otpRepository.save(otp);
-    const link = `https://yourapp.com/create-account?email=${email}&otp=${code}`;
+    const link = `${process.env.FRONTEND_URL}/set-password?email=${email}&otp=${code}`;
 
     const html = `<div style="font-family: Arial, sans-serif; padding:20px; background:#f5f5f5;">
     <div style="max-width:600px;margin:auto;background:white;padding:30px;border-radius:8px">

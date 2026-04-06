@@ -16,6 +16,7 @@ import { UpdateTaskStatusUseCase } from "../application/task/change-status/updat
 import { TaskStatusHistoryRepositoryImpl } from "../infrastructure/database/repositories/task-status-history-repository.impl";
 import { CreateProjectUseCase } from "../application/project/create-project/create-project-use-case";
 import { ProjectRepositoryImpl } from "../infrastructure/database/repositories/project-repository.impl";
+import { SetpasswordUseCase } from "../application/auth/set-password/set-password-use-case";
 
 const companyRepo = new companyRepositoryImpl();
 const userRepo = new userRepositoryImpl();
@@ -72,4 +73,9 @@ export const updateStatusUseCase=new UpdateTaskStatusUseCase(
 
 export const createProjectUseCase=new CreateProjectUseCase(
   projectRepo
+)
+
+export const setPasswordUseCase=new SetpasswordUseCase(
+  otpRepo,
+  userRepo
 )
