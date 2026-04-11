@@ -10,6 +10,7 @@ export class GetUserUseCase{
         const user= await this.userRepo.findByEmail(email)
         if(!user) throw new NotFoundError("user not found")
         const userData=await this.userRepo.findByCompanyId(user.companyId)
+    console.log(666,userData)
         return userData
     }
 }

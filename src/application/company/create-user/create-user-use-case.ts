@@ -4,6 +4,7 @@ import { IMailProvider } from "../../../domain/repositories/mail-provider.interf
 import { IOtpGenerator } from "../../../domain/repositories/otp-generator.interface";
 import { IOTPRepository } from "../../../domain/repositories/otp-repository.interface";
 import { IUserRepository } from "../../../domain/repositories/user-repository.interface";
+import { UnauthorizedError } from "../../errors/auth.error";
 import { ConflictError } from "../../errors/conflict.error";
 import { CreateUserRequest } from "./create-user-request.dto";
 import { CreateUserResponse } from "./create-user-response.dto";
@@ -16,17 +17,19 @@ export class CreateUserUseCase {
     private mailProvider: IMailProvider,
   ) {}
 
-  async execute(data: CreateUserRequest): Promise<CreateUserResponse> {
+  async execute(data: CreateUserRequest,user:any): Promise<CreateUserResponse> {
     console.log(111, data);
-    const { name, email, companyId, role } = data;
-    let user = await this.userRepo.findByEmail(data.email);
-    if (user) throw new ConflictError("user with this email already exist");
+    const { name, email, role } = data;
+    const userData=await this.userRepo.findByEmail(user.email)
+    if(!userData) throw new UnauthorizedError("user not autherized")
+    let employee = await this.userRepo.findByEmail(data.email);
+    if (employee) throw new ConflictError("user with this email already exist");
 
     // Create user
-    user = await this.userRepo.create({
+    employee = await this.userRepo.create({
       email,
       name,
-      companyId,
+      companyId:userData.companyId,
       role: role as RoleType,
     });
 

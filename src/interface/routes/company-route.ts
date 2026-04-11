@@ -2,10 +2,11 @@
 import { Router } from "express";
 import { companyController } from "../controllers/company-controller";
 import { userController } from "../controllers/user-controller";
+import { authMiddleware } from "../middleware/auth.middleware";
 const route= Router();
 
-route.post("/create-user", companyController.createUser);
-route.get("/",companyController.getUser)
+route.post("/create-user",authMiddleware, companyController.createUser);
+route.get("/",authMiddleware,companyController.getUser)
 // route.post("/login",authController.login)
 
 

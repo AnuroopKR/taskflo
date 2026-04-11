@@ -11,14 +11,15 @@ class CompanyController {
   createUser = async (req: Request, res: Response) => {
     try {
       const userData = req.body;
+      const user=req.user
       const companyId='b823c735-f42c-4bb1-ac4d-6896b64b5335'
 
-      const user = await this.createUserUseCase.execute({...userData,companyId});
+      const employee = await this.createUserUseCase.execute(userData,user);
 
       return res.status(201).json({
         success: true,
         message: "User created successfully",
-        data: user,
+        data: employee,
       });
     } catch (error: any) {
       console.error("Create user error:", error);
@@ -32,11 +33,12 @@ class CompanyController {
 
   getUser=async(req: Request, res: Response)=>{
     try {
-      const userId=req.user?.id
-      if(!userId) res.status(401).json({message:"user unautherized"})
+      const email=req.user?.email
+      console.log(444,req.user)
+      if(!email) res.status(401).json({message:"user unautherized"})
       else{
-    const userData=await this.getUserUseCase.execute(userId)
-  res.status(200).json(userData)}
+    const userData=await this.getUserUseCase.execute(email)
+  res.status(200).json({userData,message:"success"})}
     } catch (error) {
       console.log(error)
       res.status(500).json({message:"internal server error"})

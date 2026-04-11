@@ -1,38 +1,41 @@
-import { RoleType as DomainRoleType, User } from "../../../domain/entities/User";
+import {
+  RoleType as DomainRoleType,
+  User,
+} from "../../../domain/entities/User";
 import { prisma } from "../../../config/prisma";
 import {
   IUserRepository,
   userProps,
 } from "../../../domain/repositories/user-repository.interface";
-import { RoleType as PrismaRoleType} from "../../../generated/prisma";
+import { RoleType as PrismaRoleType } from "../../../generated/prisma";
+import { UserWithRelations } from "../../../application/company/get-user/get-user-response.dto";
 
-export class userRepositoryImpl implements IUserRepository{
+export class userRepositoryImpl implements IUserRepository {
   private mapToEntity(record: {
     id: string;
     companyId: string;
     name: string;
     email: string;
     role: PrismaRoleType;
-    password:string|null;
+    password: string | null;
   }): User {
-  return new User(
-    record.id,
-    record.companyId,
-    record.name,
-    record.email,
-    record.role as DomainRoleType,
-    record.password??undefined,
-  );
+    return new User(
+      record.id,
+      record.companyId,
+      record.name,
+      record.email,
+      record.role as DomainRoleType,
+      record.password ?? undefined,
+    );
   }
-  async create(data: userProps):Promise<User> {
+  async create(data: userProps): Promise<User> {
     const userRecord = await prisma.user.create({
       data: {
         name: data.name,
         email: data.email,
         companyId: data.companyId,
-        password:data.password,
+        password: data.password,
         role: data.role as PrismaRoleType,
-
       },
     });
     return this.mapToEntity(userRecord);
@@ -52,12 +55,33 @@ export class userRepositoryImpl implements IUserRepository{
       data: { password },
     });
   }
-  async findByCompanyId(companyId: string): Promise<User[]> {
-  const userRecords = await prisma.user.findMany({
+ async findByCompanyId(companyId: string):Promise<UserWithRelations[]> {
+  const users = await prisma.user.findMany({
     where: { companyId },
+    include: {
+      projects: {
+        include: {
+          project: true,
+        },
+      },
+      assignedTasks: true,
+      company: true,
+    },
   });
 
-  return userRecords.map((user) => this.mapToEntity(user));
+  console.log("DEBUG USERS:", JSON.stringify(users, null, 2));
+
+  return users.map((user) => ({
+    id: user.id,
+    companyId:user.companyId,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+
+    projects: user.projects.map((p) => p.project),
+    tasks: user.assignedTasks,
+
+    company: user.company, // 👈 check this
+  }));
 }
-  
 }
