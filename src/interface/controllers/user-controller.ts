@@ -1,9 +1,13 @@
 import { Request, Response } from "express";
-import { createUserPassword } from "../../config/container";
+import { createUserPassword, getUserByIdUseCase } from "../../config/container";
 import { CreateUserPasswordUseCase } from "../../application/user/create-user-password/create-user-password-use-case";
+import { GetUserByIdUseCase } from "../../application/user/get-user-by-id/get-user-byid-use-case";
+import { NotFoundError } from "../../application/errors/notfound.error";
 
 class UserController {
-  constructor(private createUserPassword: CreateUserPasswordUseCase) {}
+  constructor(private createUserPassword: CreateUserPasswordUseCase,
+    private getUserByIdUseCase:GetUserByIdUseCase
+  ) {}
 
   createPassword = async (req: Request, res: Response) => {
     try {
@@ -25,8 +29,19 @@ class UserController {
       });
     }
   };
+  getUserById=async (req: Request, res: Response)=>{
+    try {
+      const id=req.params.id as string
+      const userData=await this.getUserByIdUseCase.execute(id)
+      res.status(200).json(userData)
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({message:"internal server error"})
+    }
+  }
 }
 
-const userController = new UserController(createUserPassword);
+
+const userController = new UserController(createUserPassword,getUserByIdUseCase);
 
 export { userController };

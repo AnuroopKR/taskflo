@@ -7,8 +7,16 @@ import {
   IUserRepository,
   userProps,
 } from "../../../domain/repositories/user-repository.interface";
-import { RoleType as PrismaRoleType } from "../../../generated/prisma";
+import { Prisma, RoleType as PrismaRoleType } from "../../../generated/prisma";
 import { UserWithRelations } from "../../../application/company/get-user/get-user-response.dto";
+
+type UserWithInclude = Prisma.UserGetPayload<{
+  include: {
+    projects: { include: { project: true } };
+    assignedTasks: true;
+    company: true;
+  };
+}>;
 
 export class userRepositoryImpl implements IUserRepository {
   private mapToEntity(record: {
@@ -28,6 +36,21 @@ export class userRepositoryImpl implements IUserRepository {
       record.password ?? undefined,
     );
   }
+  private mapToUserWithRelations(record: UserWithInclude): UserWithRelations {
+  return {
+    id: record.id,
+    companyId: record.companyId,
+    name: record.name,
+    email: record.email,
+    role: record.role,
+
+    projects: record.projects.map((p: any) => p.project),
+
+    tasks: record.assignedTasks,
+
+    company: record.company,
+  };
+}
   async create(data: userProps): Promise<User> {
     const userRecord = await prisma.user.create({
       data: {
@@ -40,10 +63,24 @@ export class userRepositoryImpl implements IUserRepository {
     });
     return this.mapToEntity(userRecord);
   }
-  async findById(id: string): Promise<User | null> {
-    const userRecord = await prisma.user.findUnique({ where: { id } });
-    return userRecord ? this.mapToEntity(userRecord) : null;
-  }
+async findById(id: string): Promise<UserWithRelations | null> {
+  const userRecord = await prisma.user.findUnique({
+    where: { id },
+    include: {
+      projects: {
+        include: {
+          project: true,
+        },
+      },
+      assignedTasks: true,
+      company: true,
+    },
+  });
+
+  if (!userRecord) return null;
+
+  return this.mapToUserWithRelations(userRecord);
+}
 
   async findByEmail(email: string): Promise<User | null> {
     const userRecord = await prisma.user.findUnique({ where: { email } });

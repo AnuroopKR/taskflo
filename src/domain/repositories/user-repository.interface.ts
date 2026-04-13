@@ -8,7 +8,9 @@ export type userProps = Pick<
 
 export interface IUserRepository {
   create(data: userProps): Promise<User>;
+  findById(id:string):Promise<UserWithRelations|null>
   findByEmail(email: string): Promise<User | null>;
   updatePassword(email: string, password: string): Promise<void>;
   findByCompanyId(companyId: string): Promise<UserWithRelations[]>;
+
 }

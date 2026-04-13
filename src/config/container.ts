@@ -18,6 +18,7 @@ import { CreateProjectUseCase } from "../application/project/create-project/crea
 import { ProjectRepositoryImpl } from "../infrastructure/database/repositories/project-repository.impl";
 import { SetpasswordUseCase } from "../application/auth/set-password/set-password-use-case";
 import { GetUserUseCase } from "../application/company/get-user/get-user-usecase";
+import { GetUserByIdUseCase } from "../application/user/get-user-by-id/get-user-byid-use-case";
 
 const companyRepo = new companyRepositoryImpl();
 const userRepo = new userRepositoryImpl();
@@ -82,5 +83,9 @@ export const setPasswordUseCase=new SetpasswordUseCase(
 )
 
 export const getUserUseCase=new GetUserUseCase(
+  userRepo
+)
+
+export const getUserByIdUseCase=new GetUserByIdUseCase(
   userRepo
 )
