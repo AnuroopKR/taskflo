@@ -21,8 +21,8 @@ export class UserLoginUseCase{
         const isMatch=await this.passwordHasher.compare(password,user.password??"")
         if(!isMatch) throw new UnauthorizedError("invalied credential")
         
-        const accessToken=this.tokenService.generateAccessToken({userId:user.id,email:user.email,role:user.role})
-        const refreshToken=this.tokenService.generateRefreshToken({userId:user.id,email:user.email,role:user.role})
+        const accessToken=this.tokenService.generateAccessToken({userId:user.id,email:user.email,role:user.role,companyId:user.companyId})
+        const refreshToken=this.tokenService.generateRefreshToken({userId:user.id,email:user.email,role:user.role,companyId:user.companyId})
 
         return {user:{
       id: user.id,

@@ -10,19 +10,42 @@ export class ProjectController {
 
     }
   
-    createProject=async (req: Request, res: Response)=> {
-    try {
-      const data=req.body
-      const user=req.user
-      const userId="b823c735-f42c-4bb1-ac4d-6896b64b5335"
-      const project = await this.createProjectUseCase.execute(data,userId);
 
-      res.status(201).json(project);
-    } catch (error: any) {
-      console.log(error)
-      res.status(400).json({ message: error.message });
+  createProject = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
+
+    const { name, description, priority, startDate, dueDate } = req.body;
+
+    const project = await this.createProjectUseCase.execute(
+      {
+        name,
+        description,
+        status:"ACTIVE",
+        priority,
+        startDate,
+        dueDate,
+      },
+      user.id,
+      user.companyId,
+    );
+
+    return res.status(201).json({
+      message: "Project created successfully",
+      data: project,
+    });
+
+  } catch (error: any) {
+    console.log("createProject error",error)
+    return res.status(400).json({
+      message: error.message || "Something went wrong",
+    });
   }
+};
 
 //   static async getByCompany(req: Request, res: Response) {
 //     try {

@@ -46,13 +46,14 @@ export const authMiddleware = (
         userId: decoded.userId,
         email: decoded.email,
         role: decoded.role,
+        companyId: decoded.companyId,
       });
       const newRefreshToken = jwtService.generateRefreshToken({
         userId: decoded.userId,
         email: decoded.email,
         role: decoded.role,
+        companyId: decoded.companyId,
       });
-
 
       res.cookie("accessToken", newAccessToken, {
         httpOnly: true,

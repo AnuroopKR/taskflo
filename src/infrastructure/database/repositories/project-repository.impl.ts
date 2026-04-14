@@ -1,11 +1,14 @@
 // infrastructure/repositories/project.prisma.repository.ts
 
 import { IProjectRepository } from "../../../domain/repositories/project-repository.interface";
-import { Project, ProjectStatus, Priority } from "../../../domain/entities/Project";
+import {
+  Project,
+  ProjectStatus,
+  Priority,
+} from "../../../domain/entities/Project";
 import { prisma } from "../../../config/prisma";
 
 export class ProjectRepositoryImpl implements IProjectRepository {
-
   async create(project: Project): Promise<Project> {
     const data = await prisma.project.create({
       data: {
@@ -14,8 +17,8 @@ export class ProjectRepositoryImpl implements IProjectRepository {
         companyId: project.companyId,
         status: project.status,
         priority: project.priority,
-        startDate: project.startDate,
-        dueDate: project.dueDate,
+        startDate: project.startDate ? new Date(project.startDate) : undefined,
+        dueDate: project.dueDate ? new Date(project.dueDate) : undefined,
         ownerId: project.ownerId,
       },
     });
@@ -73,7 +76,7 @@ export class ProjectRepositoryImpl implements IProjectRepository {
       data.priority as Priority,
       data.startDate,
       data.dueDate,
-      data.ownerId
+      data.ownerId,
     );
   }
 }

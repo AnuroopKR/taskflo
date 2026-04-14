@@ -1,9 +1,11 @@
+import { Priority, ProjectStatus } from "../../../domain/entities/Project";
+
 export type CreateProjectRequestDto={
     name: string;
     description:string;
-    status:string;
-    priority:string;
-    startDate:string;
-    endDate:string;
+    status:ProjectStatus;
+    priority:Priority;
+    startDate:Date;
+    dueDate:Date;
 
 }

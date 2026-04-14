@@ -7,13 +7,19 @@ import { CreateProjectRequestDto } from "./create-project-request.dto";
 export class CreateProjectUseCase {
   constructor(private projectRepo: IProjectRepository) {}
 
-  async execute(input: CreateProjectRequestDto,user:string) {
-    const project = new Project(
-      0, // temp (DB will generate)
-      input.name,
-      user
-    );
+  async execute(input: CreateProjectRequestDto, userId: string, companyId: string) {
+  const project = new Project(
+    0,
+    input.name,
+    companyId,           // ✅ correct
+    input.description,
+    input.status,
+    input.priority,
+    input.startDate,
+    input.dueDate,
+    userId               // ✅ ownerId
+  );
 
-    return await this.projectRepo.create(project);
-  }
+  return await this.projectRepo.create(project);
+}
 }
