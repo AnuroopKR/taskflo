@@ -1,13 +1,15 @@
 import { Request, Response } from "express";
 import { CreateProjectUseCase } from "../../application/project/create-project/create-project-use-case";
-import { createProjectUseCase, getProjectUseCase } from "../../config/container";
+import { createProjectUseCase, getProjectByIdUseCase, getProjectUseCase } from "../../config/container";
 import { GetProjectsUseCase } from "../../application/project/get-project/get-project-use-case";
+import { GetProjectByIdUseCase } from "../../application/project/get-project-by-id/get-project-by-id-use-case";
 
 export class ProjectController {
 
     constructor(
         private createProjectUseCase:CreateProjectUseCase,
-        private getProjectUseCase:GetProjectsUseCase
+        private getProjectUseCase:GetProjectsUseCase,
+        private getProjectByIdUseCase:GetProjectByIdUseCase
     ){
 
     }
@@ -61,6 +63,23 @@ export class ProjectController {
       res.status(400).json({ message: error.message });
     }
   }
+
+   getProjectById= async(req: Request, res: Response)=> {
+    try {
+      const id=Number(req.params.id)
+      const companyId=req.user?.companyId
+      if(!companyId) return res.status(400).json('unautherized')
+
+        if(!id) return res.status(404).json("route not found")
+
+      const project = await this.getProjectByIdUseCase.execute(id);
+      console.log(999,project)
+
+      res.json(project);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  }
 }
 
-export const projectController=new ProjectController(createProjectUseCase,getProjectUseCase)
+export const projectController=new ProjectController(createProjectUseCase,getProjectUseCase,getProjectByIdUseCase)

@@ -5,7 +5,7 @@ import { Project } from "../entities/Project";
 
 export interface IProjectRepository {
   create(project: Project): Promise<Project>;
-  findById(id: number): Promise<Project | null>;
+  findById(id: number): Promise<ProjectWithRelations | null>;
   findByCompany(companyId: string): Promise<ProjectWithRelations[]>;
   update(project: Project): Promise<Project>;
   delete(id: number): Promise<void>;

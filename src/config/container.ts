@@ -20,6 +20,7 @@ import { SetpasswordUseCase } from "../application/auth/set-password/set-passwor
 import { GetUserUseCase } from "../application/company/get-user/get-user-usecase";
 import { GetUserByIdUseCase } from "../application/user/get-user-by-id/get-user-byid-use-case";
 import { GetProjectsUseCase } from "../application/project/get-project/get-project-use-case";
+import { GetProjectByIdUseCase } from "../application/project/get-project-by-id/get-project-by-id-use-case";
 
 const companyRepo = new companyRepositoryImpl();
 const userRepo = new userRepositoryImpl();
@@ -79,6 +80,10 @@ export const createProjectUseCase=new CreateProjectUseCase(
 )
 
 export const getProjectUseCase=new GetProjectsUseCase(
+  projectRepo
+)
+
+export const getProjectByIdUseCase=new GetProjectByIdUseCase(
   projectRepo
 )
 
