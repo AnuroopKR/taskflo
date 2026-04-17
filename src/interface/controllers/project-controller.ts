@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
 import { CreateProjectUseCase } from "../../application/project/create-project/create-project-use-case";
-import { createProjectUseCase } from "../../config/container";
+import { createProjectUseCase, getProjectUseCase } from "../../config/container";
+import { GetProjectsUseCase } from "../../application/project/get-project/get-project-use-case";
 
 export class ProjectController {
 
     constructor(
-        private createProjectUseCase:CreateProjectUseCase
+        private createProjectUseCase:CreateProjectUseCase,
+        private getProjectUseCase:GetProjectsUseCase
     ){
 
     }
@@ -47,17 +49,18 @@ export class ProjectController {
   }
 };
 
-//   static async getByCompany(req: Request, res: Response) {
-//     try {
-//       const useCase = new GetProjectsUseCase(repo);
+   getByCompany= async(req: Request, res: Response)=> {
+    try {
+      const companyId=req.user?.companyId
+      if(!companyId) return res.status(400).json('unautherized')
 
-//       const projects = await useCase.execute(req.params.companyId);
+      const projects = await this.getProjectUseCase.execute(companyId);
 
-//       res.json(projects);
-//     } catch (error: any) {
-//       res.status(400).json({ message: error.message });
-//     }
-//   }
+      res.json(projects);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  }
 }
 
-export const projectController=new ProjectController(createProjectUseCase)
+export const projectController=new ProjectController(createProjectUseCase,getProjectUseCase)

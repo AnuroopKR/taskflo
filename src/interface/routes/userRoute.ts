@@ -5,7 +5,7 @@ const route= Router();
 
 route.post("/create-password", userController.createPassword);
 route.get('/get-user/:id',userController.getUserById)
-// route.post("/login",authController.login)
+//  route.post("/create-project",userController.createProject)
 
 
 export default route;

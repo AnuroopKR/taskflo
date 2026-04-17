@@ -7,7 +7,9 @@ declare global {
     interface Request {
  user?: {
     id: string;
-    email?: string;
+        companyId: string; // ✅ ADD THIS
+        role: RoleType;
+        email?: string;
   };    }
   }
 }

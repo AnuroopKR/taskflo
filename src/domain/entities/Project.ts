@@ -18,10 +18,13 @@ export class Project {
     public startDate?: Date,
     public dueDate?: Date,
     public ownerId?: string,
+    public tasks: any[] = [] ,// or Task[]
+    createdAt?: Date,
+    updatedAt?: Date,
   ) {
     this.name = name.trim();
-    this.createdAt = new Date();
-    this.updatedAt = new Date();
+  this.createdAt = createdAt ?? new Date();
+  this.updatedAt = updatedAt ?? new Date();
 
     this.validate();
   }

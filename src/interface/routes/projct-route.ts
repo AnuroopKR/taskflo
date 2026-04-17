@@ -5,6 +5,7 @@ import { authMiddleware } from "../middleware/auth.middleware";
 const route=Router()
 
 route.post("/",authMiddleware, projectController.createProject)
+route.get ('/',authMiddleware,projectController.getByCompany)
 // route.post("/status",projectController.)
 
 

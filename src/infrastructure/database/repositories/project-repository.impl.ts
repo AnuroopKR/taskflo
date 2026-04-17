@@ -7,7 +7,11 @@ import {
   Priority,
 } from "../../../domain/entities/Project";
 import { prisma } from "../../../config/prisma";
+import { Prisma } from "../../../generated/prisma";
 
+export type ProjectWithRelations = Prisma.ProjectGetPayload<{
+  include: { tasks: true; company: true };
+}>;
 export class ProjectRepositoryImpl implements IProjectRepository {
   async create(project: Project): Promise<Project> {
     const data = await prisma.project.create({
@@ -36,13 +40,13 @@ export class ProjectRepositoryImpl implements IProjectRepository {
     return this.toDomain(data);
   }
 
-  async findByCompany(companyId: string): Promise<Project[]> {
-    const data = await prisma.project.findMany({
-      where: { companyId },
-    });
+async findByCompany(companyId: string): Promise<ProjectWithRelations[]> {
+  return prisma.project.findMany({
+    where: { companyId },
+    include: { tasks: true, company: true },
+  });
+}
 
-    return data.map(this.toDomain);
-  }
 
   async update(project: Project): Promise<Project> {
     const data = await prisma.project.update({
