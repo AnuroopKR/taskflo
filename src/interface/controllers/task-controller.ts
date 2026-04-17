@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateTaskUseCase } from "../../application/company/create-task/create-task-use-case";
+import { CreateTaskUseCase } from "../../application/task/create-task/create-task-use-case";
 import { createTaskUseCase, updateStatusUseCase } from "../../config/container";
 import { UpdateTaskStatusUseCase } from "../../application/task/change-status/update-status-use-case";
 

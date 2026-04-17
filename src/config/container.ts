@@ -10,7 +10,7 @@ import { OTPRepositoryImpl } from "../infrastructure/database/repositories/otp-r
 import { VerifyOtpUseCase } from "../application/auth/verify-otp/verify-otp-use-case";
 import { CreateUserUseCase } from "../application/company/create-user/create-user-use-case";
 import { CreateUserPasswordUseCase } from "../application/user/create-user-password/create-user-password-use-case";
-import { CreateTaskUseCase } from "../application/company/create-task/create-task-use-case";
+import { CreateTaskUseCase } from "../application/task/create-task/create-task-use-case";
 import { TaskRepositoryImpl } from "../infrastructure/database/repositories/task-repository.impl";
 import { UpdateTaskStatusUseCase } from "../application/task/change-status/update-status-use-case";
 import { TaskStatusHistoryRepositoryImpl } from "../infrastructure/database/repositories/task-status-history-repository.impl";
