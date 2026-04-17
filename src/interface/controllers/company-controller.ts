@@ -12,8 +12,6 @@ class CompanyController {
     try {
       const userData = req.body;
       const user=req.user
-      const companyId='b823c735-f42c-4bb1-ac4d-6896b64b5335'
-
       const employee = await this.createUserUseCase.execute(userData,user);
 
       return res.status(201).json({

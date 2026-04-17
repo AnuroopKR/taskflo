@@ -21,6 +21,8 @@ import { GetUserUseCase } from "../application/company/get-user/get-user-usecase
 import { GetUserByIdUseCase } from "../application/user/get-user-by-id/get-user-byid-use-case";
 import { GetProjectsUseCase } from "../application/project/get-project/get-project-use-case";
 import { GetProjectByIdUseCase } from "../application/project/get-project-by-id/get-project-by-id-use-case";
+import { AddProjectMembersUseCase } from "../application/project/add-member/add-member-use-case";
+import { ProjectMemberRepositoryImpl } from "../infrastructure/database/repositories/project-member-repository.impl";
 
 const companyRepo = new companyRepositoryImpl();
 const userRepo = new userRepositoryImpl();
@@ -32,7 +34,8 @@ const tokenService = new JwtService(   process.env.JWT_ACCESS_SECRET || "default
   process.env.JWT_REFRESH_SECRET || "default_refresh_secret");
 const taskRepo=new TaskRepositoryImpl()
 const statusRepo=new TaskStatusHistoryRepositoryImpl
-const projectRepo=new ProjectRepositoryImpl
+const projectRepo=new ProjectRepositoryImpl;
+const projectMemberRepo=new ProjectMemberRepositoryImpl
 
 export const registerUseCase = new companyRegisterUseCase(
   companyRepo,
@@ -85,6 +88,10 @@ export const getProjectUseCase=new GetProjectsUseCase(
 
 export const getProjectByIdUseCase=new GetProjectByIdUseCase(
   projectRepo
+)
+
+export const addMembersUseCase=new AddProjectMembersUseCase(
+  projectMemberRepo
 )
 
 export const setPasswordUseCase=new SetpasswordUseCase(
