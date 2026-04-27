@@ -30,16 +30,28 @@ export class ProjectRepositoryImpl implements IProjectRepository {
     return this.toDomain(data);
   }
 
-  async findById(id: number): Promise<ProjectWithRelations | null> {
+  async findById(id: number): Promise<Project | null> {
     const data = await prisma.project.findUnique({
       where: { id },
-      include: { tasks: true, company: true,members:true }
     });
 
     if (!data) return null;
 
-    return data;
-  }
+    return new Project(
+    data.id,
+    data.name,
+    data.companyId,
+    data.description ?? undefined,
+    data.status,
+    data.priority,
+    data.startDate ?? undefined,
+    data.dueDate ?? undefined,
+    data.ownerId ?? undefined,
+    data.createdAt,
+    data.updatedAt
+  );
+}
+  
 
 async findByCompany(companyId: string): Promise<ProjectWithRelations[]> {
   return prisma.project.findMany({

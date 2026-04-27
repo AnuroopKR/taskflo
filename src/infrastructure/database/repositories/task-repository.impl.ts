@@ -83,6 +83,14 @@ export class TaskRepositoryImpl implements ITaskRepository {
     return record ? this.mapToEntity(record) : null;
   }
 
+  async findByProject(projectId: number): Promise<Task[] | null> {
+    const records = await prisma.task.findMany({
+      where: { projectId },
+    });
+
+    return records ? records.map((record) => this.mapToEntity(record)) : null;
+  }
+
   async findAll(): Promise<Task[]> {
     const records = await prisma.task.findMany();
     return records.map((record) => this.mapToEntity(record));

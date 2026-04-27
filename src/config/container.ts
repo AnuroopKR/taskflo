@@ -96,7 +96,8 @@ export const getProjectUseCase=new GetProjectsUseCase(
 )
 
 export const getProjectByIdUseCase=new GetProjectByIdUseCase(
-  projectRepo
+  projectRepo,
+  taskRepo
 )
 
 export const addMembersUseCase=new AddProjectMembersUseCase(

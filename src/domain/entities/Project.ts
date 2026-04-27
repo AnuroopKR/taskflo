@@ -18,7 +18,6 @@ export class Project {
     public startDate?: Date,
     public dueDate?: Date,
     public ownerId?: string,
-    public tasks: any[] = [] ,// or Task[]
     createdAt?: Date,
     updatedAt?: Date,
   ) {
