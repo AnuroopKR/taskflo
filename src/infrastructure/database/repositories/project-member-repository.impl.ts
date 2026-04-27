@@ -3,15 +3,15 @@
 import { prisma } from "../../../config/prisma";
 import { IProjectMemberRepository } from "../../../domain/repositories/project-member-repository.interface";
 import { ProjectMember } from "../../../domain/entities/ProjectMember";
+import { ProjectMemberDTO } from "../../../application/project/get-members/project-member-response.dto";
 
 export class ProjectMemberRepositoryImpl implements IProjectMemberRepository {
-
   private mapToEntity(record: any): ProjectMember {
     return new ProjectMember(
       record.id,
       record.userId,
       record.projectId,
-      record.role ?? undefined
+      record.role ?? undefined,
     );
   }
 
@@ -36,11 +36,19 @@ export class ProjectMemberRepositoryImpl implements IProjectMemberRepository {
     });
   }
 
-  async findByProjectId(projectId: number): Promise<ProjectMember[]> {
-    const records = await prisma.projectMember.findMany({
-      where: { projectId },
-    });
+async findByProjectId(projectId: number): Promise<ProjectMemberDTO[]> {
+  const records = await prisma.projectMember.findMany({
+    where: { projectId },
+    include: { user: true },
+  });
 
-    return records.map(this.mapToEntity);
-  }
+  return records.map((record) => ({
+    id: record.id,
+    user: {
+      id: record.user.id,
+      name: record.user.name,
+      email: record.user.email,
+    },
+  }));
+}
 }

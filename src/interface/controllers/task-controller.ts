@@ -12,7 +12,9 @@ class TaskController {
   createTask = async (req: Request, res: Response) => {
     try {
       const task = req.body;
-      const taskData = await this.createTaskUseCase.execute(task);
+      const userId=req.user?.id
+      console.log(task)
+      const taskData = await this.createTaskUseCase.execute({...task,createdBy:userId});
       res.status(200).json(taskData);
     } catch (error) {
       console.log(111, error);

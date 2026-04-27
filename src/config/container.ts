@@ -23,6 +23,7 @@ import { GetProjectsUseCase } from "../application/project/get-project/get-proje
 import { GetProjectByIdUseCase } from "../application/project/get-project-by-id/get-project-by-id-use-case";
 import { AddProjectMembersUseCase } from "../application/project/add-member/add-member-use-case";
 import { ProjectMemberRepositoryImpl } from "../infrastructure/database/repositories/project-member-repository.impl";
+import { GetProjectMembersUseCase } from "../application/project/get-members/get-members-use-case";
 
 const companyRepo = new companyRepositoryImpl();
 const userRepo = new userRepositoryImpl();
@@ -91,6 +92,10 @@ export const getProjectByIdUseCase=new GetProjectByIdUseCase(
 )
 
 export const addMembersUseCase=new AddProjectMembersUseCase(
+  projectMemberRepo
+)
+
+export const getProjectMembersUseCase=new GetProjectMembersUseCase(
   projectMemberRepo
 )
 

@@ -7,7 +7,9 @@ const route=Router()
 route.post("/",authMiddleware, projectController.createProject)
 route.get ('/',authMiddleware,projectController.getByCompany)
 route.get ('/:id',authMiddleware,projectController.getProjectById)
+route.get ('/:id/members',authMiddleware,projectController.getMembers)
 route.post ('/:id/members',authMiddleware,projectController.addMembers)
+
 
 
 // route.post("/status",projectController.)

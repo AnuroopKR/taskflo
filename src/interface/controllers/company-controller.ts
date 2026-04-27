@@ -32,10 +32,10 @@ class CompanyController {
   getUser=async(req: Request, res: Response)=>{
     try {
       const email=req.user?.email
-      console.log(444,req.user)
       if(!email) res.status(401).json({message:"user unautherized"})
       else{
     const userData=await this.getUserUseCase.execute(email)
+    console.log(444,userData)
   res.status(200).json({userData,message:"success"})}
     } catch (error) {
       console.log(error)

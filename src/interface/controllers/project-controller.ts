@@ -4,11 +4,13 @@ import {
   addMembersUseCase,
   createProjectUseCase,
   getProjectByIdUseCase,
+  getProjectMembersUseCase,
   getProjectUseCase,
 } from "../../config/container";
 import { GetProjectsUseCase } from "../../application/project/get-project/get-project-use-case";
 import { GetProjectByIdUseCase } from "../../application/project/get-project-by-id/get-project-by-id-use-case";
 import { AddProjectMembersUseCase } from "../../application/project/add-member/add-member-use-case";
+import { GetProjectMembersUseCase } from "../../application/project/get-members/get-members-use-case";
 
 export class ProjectController {
   constructor(
@@ -16,6 +18,7 @@ export class ProjectController {
     private getProjectUseCase: GetProjectsUseCase,
     private getProjectByIdUseCase: GetProjectByIdUseCase,
     private addMembersUseCase: AddProjectMembersUseCase,
+    private getProjectMembersUseCase:GetProjectMembersUseCase
   ) {}
 
   createProject = async (req: Request, res: Response) => {
@@ -95,6 +98,29 @@ export class ProjectController {
       });
     }
   };
+getMembers= async (req: Request, res: Response): Promise<void> =>{
+    try {
+      const projectId = Number(req.params.id)
+      if (isNaN(projectId)) {
+        res.status(400).json({ message: "Invalid projectId" });
+        return;
+      }
+
+      const members = await this.getProjectMembersUseCase.execute(projectId);
+      res.status(200).json({
+        success: true,
+        data: members,
+      });
+    } catch (error: any) {
+      console.error("Get Members Error:", error);
+
+      res.status(500).json({
+        success: false,
+        message: error.message || "Internal Server Error",
+      });
+    }
+  
+  }
 }
 
 export const projectController = new ProjectController(
@@ -102,4 +128,5 @@ export const projectController = new ProjectController(
   getProjectUseCase,
   getProjectByIdUseCase,
   addMembersUseCase,
+  getProjectMembersUseCase
 );
