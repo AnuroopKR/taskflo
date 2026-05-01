@@ -38,6 +38,7 @@ enum Priority {
 }
 
 enum SubmissionStatus {
+  PENDING
   APPROVED
   REJECTED
 }
@@ -167,6 +168,8 @@ model TaskSubmission {
   submitter   User?    @relation("SubmissionByUser", fields: [submittedBy], references: [id])
   comment     String?  // Employee submission note
   submittedAt DateTime @default(now())
+  files       String[]
+  link        String?
 
   reviewedBy  String?
   reviewer    User?    @relation("ReviewedByAdmin", fields: [reviewedBy], references: [id])

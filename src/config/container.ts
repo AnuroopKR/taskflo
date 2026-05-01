@@ -25,6 +25,8 @@ import { AddProjectMembersUseCase } from "../application/project/add-member/add-
 import { ProjectMemberRepositoryImpl } from "../infrastructure/database/repositories/project-member-repository.impl";
 import { GetProjectMembersUseCase } from "../application/project/get-members/get-members-use-case";
 import { GetTaskUseCase } from "../application/task/get-task/get-task-use-case";
+import { SubmitTaskUseCase } from "../application/task/submit/submit-task-use-case";
+import { TaskSubmissionRepositoryImpl } from "../infrastructure/database/repositories/task-submission-repository.impl";
 
 const companyRepo = new companyRepositoryImpl();
 const userRepo = new userRepositoryImpl();
@@ -38,6 +40,7 @@ const taskRepo=new TaskRepositoryImpl()
 const statusRepo=new TaskStatusHistoryRepositoryImpl
 const projectRepo=new ProjectRepositoryImpl;
 const projectMemberRepo=new ProjectMemberRepositoryImpl
+const taskSubmitRepo=new TaskSubmissionRepositoryImpl
 
 export const registerUseCase = new companyRegisterUseCase(
   companyRepo,
@@ -120,3 +123,5 @@ export const getUserUseCase=new GetUserUseCase(
 export const getUserByIdUseCase=new GetUserByIdUseCase(
   userRepo
 )
+
+export const submitTaskUseCase=new SubmitTaskUseCase (taskSubmitRepo)

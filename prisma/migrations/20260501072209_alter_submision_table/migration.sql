@@ -1,0 +1,9 @@
+/*
+  Warnings:
+
+  - Added the required column `link` to the `TaskSubmission` table without a default value. This is not possible if the table is not empty.
+
+*/
+-- AlterTable
+ALTER TABLE "TaskSubmission" ADD COLUMN     "files" TEXT[],
+ADD COLUMN     "link" TEXT NOT NULL;

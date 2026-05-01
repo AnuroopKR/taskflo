@@ -26,7 +26,7 @@ export const authMiddleware = (
         jwtService.verifyAccessToken(accessToken);
 
       if (decoded) {
-        (req as any).user = decoded;
+        (req as any).user = {id:decoded.userId,...decoded};
         return next();
       }
       // ❗ If access token invalid → fallback to refresh
@@ -66,7 +66,7 @@ export const authMiddleware = (
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
 
-      (req as any).user = decoded;
+      (req as any).user = {id:decoded.userId,...decoded};
       return next();
     }
 
