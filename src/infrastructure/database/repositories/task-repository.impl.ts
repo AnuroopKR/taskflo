@@ -35,6 +35,13 @@ export class TaskRepositoryImpl implements ITaskRepository {
   }
 
   async save(task: Task): Promise<Task> {
+    console.log("RAW assignedTo:", task.assignedTo);
+
+    const assignedTo =
+  task.assignedTo?.trim()
+    ? task.assignedTo.trim()
+    : null;
+
     if (!task.id || task.id === 0) {
       // CREATE
       const created = await prisma.task.create({
@@ -47,7 +54,7 @@ export class TaskRepositoryImpl implements ITaskRepository {
           dueDate: task.dueDate,
           completedAt: task.completedAt,
           createdBy: task.createdBy,
-          assignedTo: task.assignedTo,
+          assignedTo,
           projectId: task.projectId,
         },
       });

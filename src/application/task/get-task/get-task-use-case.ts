@@ -9,11 +9,13 @@ export class GetTaskUseCase {
     private projectRepo:IProjectRepository
   ) {}
 
-  async execute(id: number) {
+  async execute(id: number,userId:string) {
     const task= await this.taskRepo.findById(id);
-    const user=await this.userRepo.findById(task?.assignedTo!)
+    const createdBy=await this.userRepo.findById(userId)
+    let user
+    if(task?.assignedTo){
+    user=await this.userRepo.findById(task?.assignedTo)}
     const project=await this.projectRepo.findById(Number(task?.projectId!))
-    console.log(234,task,123,user,123,project)
-    return {task,user,project}
+    return {task,user,project,createdBy}
   }
 }

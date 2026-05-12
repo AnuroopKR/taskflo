@@ -15,7 +15,7 @@ class TaskController {
     private createTaskUseCase: CreateTaskUseCase,
     private updateStatusUseCAse: UpdateTaskStatusUseCase,
     private getTaskUseCase: GetTaskUseCase,
-    private submiTaskUseCase:SubmitTaskUseCase
+    private submiTaskUseCase: SubmitTaskUseCase,
   ) {}
 
   createTask = async (req: Request, res: Response) => {
@@ -51,8 +51,9 @@ class TaskController {
   };
   getTask = async (req: Request, res: Response) => {
     try {
+      const userId = req.user?.id;
       const taskId = Number(req.params.id);
-      const task = await this.getTaskUseCase.execute(taskId);
+      const task = await this.getTaskUseCase.execute(taskId,userId!);
       return res.status(200).json(task);
     } catch (error) {
       console.log(error);
@@ -62,14 +63,17 @@ class TaskController {
 
   submitTask = async (req: Request, res: Response) => {
     try {
-      const userId = req.user?.id
-      console.log(100,userId)
-      const data=req.body
-      const submitedTask=this.submiTaskUseCase.execute({...data,submittedBy:userId})
-      return res.status(200).json(submitedTask)
+      const userId = req.user?.id;
+      console.log(100, userId);
+      const data = req.body;
+      const submitedTask = this.submiTaskUseCase.execute({
+        ...data,
+        submittedBy: userId,
+      });
+      return res.status(200).json(submitedTask);
     } catch (error) {
-      console.log(error)
-      return res.status(500).json({message:"internal server error"})
+      console.log(error);
+      return res.status(500).json({ message: "internal server error" });
     }
   };
 }
@@ -78,5 +82,5 @@ export const taskController = new TaskController(
   createTaskUseCase,
   updateStatusUseCase,
   getTaskUseCase,
-  submitTaskUseCase
+  submitTaskUseCase,
 );
