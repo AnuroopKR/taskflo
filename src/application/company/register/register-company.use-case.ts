@@ -8,6 +8,7 @@ import { IMailProvider } from "../../../domain/repositories/mail-provider.interf
 import { IOtpGenerator } from "../../../domain/repositories/otp-generator.interface";
 import { IOTPRepository } from "../../../domain/repositories/otp-repository.interface";
 import { OTP } from "../../../domain/entities/Otp";
+import { IJwtService } from "../../../domain/repositories/jwt-token-repository.interface";
 
 export class companyRegisterUseCase {
   constructor(
@@ -17,6 +18,7 @@ export class companyRegisterUseCase {
     private mailProvider: IMailProvider,
     private otpGenerator: IOtpGenerator,
     private otpRepository: IOTPRepository,
+    private tokenService: IJwtService,
   ) {}
 
   async execute(data: RegisterRequest): Promise<RegisterResponseDTO> {
@@ -44,6 +46,9 @@ export class companyRegisterUseCase {
     const code = this.otpGenerator.generate(6);
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 min
     const otp = new OTP(email, code, expiresAt);
+    const emailToken = this.tokenService.generateEmailToken({
+      email: user.email,
+    });
 
     await this.otpRepository.save(otp);
     const html = `
@@ -85,6 +90,6 @@ export class companyRegisterUseCase {
     });
 
     console.log("otp", otp);
-    return { user: user, company: company, otp: code };
+    return { user: user, company: company, otp: code, emailToken };
   }
 }

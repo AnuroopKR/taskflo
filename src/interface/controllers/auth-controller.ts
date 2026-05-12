@@ -20,8 +20,8 @@ export class AuthController {
 
   register = async (req: Request, res: Response) => {
     try {
-      const result = await this.registerUseCase.execute(req.body);
-      res.json(result);
+      const {user,company,otp,emailToken} = await this.registerUseCase.execute(req.body);
+      res.status(200).json({user,emailToken});
     } catch (error: any) {
       res.status(error.statusCode || 500).json({ message: error.message });
     }
@@ -30,7 +30,6 @@ export class AuthController {
   login = async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
-      console.log(222, email, password);
       const { user, accessToken, refreshToken } =
         await this.loginUseCase.execute({ email, password });
 
@@ -63,14 +62,15 @@ export class AuthController {
 
   verifyotp = async (req: Request, res: Response) => {
     try {
-      const { email, code } = req.body;
-      if (!email || !code) {
+      const { token, code } = req.body;
+      console.log(token,code)
+      if (!token || !code) {
         return res.status(400).json({
           success: false,
           message: "Email and OTP code are required",
         });
       }
-      const result = await this.verifyOtpUsecase.execute(email, code);
+      const result = await this.verifyOtpUsecase.execute(token, code);
 
       return res.status(200).json({
         success: true,

@@ -121,4 +121,14 @@ async findById(id: string): Promise<UserWithRelations | null> {
     company: user.company, // 👈 check this
   }));
 }
+async verifyUser(email: string): Promise<void> {
+  await prisma.user.update({
+    where: {
+      email,
+    },
+    data: {
+      isVerified: true,
+    },
+  });
+}
 }

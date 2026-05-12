@@ -12,5 +12,6 @@ export interface IUserRepository {
   findByEmail(email: string): Promise<User | null>;
   updatePassword(email: string, password: string): Promise<void>;
   findByCompanyId(companyId: string): Promise<UserWithRelations[]>;
+  verifyUser(email: string): Promise<void>;
 
 }

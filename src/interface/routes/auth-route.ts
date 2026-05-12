@@ -8,6 +8,7 @@ route.post("/", authController.register);
 route.post("/login",authController.login)
 route.post("/set-password",authController.setPassword)
 route.get("/verify-token",authMiddleware,authController.verifyToken)
+route.post('/verify-otp',authController.verifyotp)
 
 
 export default route;

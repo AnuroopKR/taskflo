@@ -13,6 +13,7 @@ export interface RegisterResponseDTO {
     plan?: string;
   };
   otp: string;
+  emailToken: string;
   // accessToken: string;
   // refreshToken: string;
 }

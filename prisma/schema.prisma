@@ -4,9 +4,8 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-
 generator client {
-  provider = "prisma-client-js" 
+  provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
 
@@ -50,7 +49,6 @@ enum ProjectStatus {
   CANCELLED
 }
 
-
 ///////////////////////
 // MODELS
 ///////////////////////
@@ -63,27 +61,28 @@ model Company {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users     User[]
-  projects  Project[]
+  users    User[]
+  projects Project[]
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  companyId String
-  password  String?
-  role      RoleType
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  companyId  String
+  isVerified Boolean  @default(false)
+  password   String?
+  role       RoleType
 
-  company   Company  @relation(fields: [companyId], references: [id])
+  company Company @relation(fields: [companyId], references: [id])
 
-  createdTasks  Task[] @relation("TaskCreator")
-  assignedTasks Task[] @relation("TaskAssignee")
-  submissions   TaskSubmission[] @relation("SubmissionByUser")
-  reviews       TaskSubmission[] @relation("ReviewedByAdmin")
+  createdTasks        Task[]              @relation("TaskCreator")
+  assignedTasks       Task[]              @relation("TaskAssignee")
+  submissions         TaskSubmission[]    @relation("SubmissionByUser")
+  reviews             TaskSubmission[]    @relation("ReviewedByAdmin")
   taskStatusHistories TaskStatusHistory[]
-  projects  ProjectMember[]
-  ownedProjects Project[]
+  projects            ProjectMember[]
+  ownedProjects       Project[]
 }
 
 model OTP {
@@ -94,50 +93,50 @@ model OTP {
 }
 
 model Project {
-  id        Int      @id @default(autoincrement())
-  name      String
+  id          Int     @id @default(autoincrement())
+  name        String
   description String?
-  companyId String
-  company   Company  @relation(fields: [companyId], references: [id])
+  companyId   String
+  company     Company @relation(fields: [companyId], references: [id])
 
-  status    ProjectStatus @default(ACTIVE)
-  priority  Priority      @default(MEDIUM)
+  status   ProjectStatus @default(ACTIVE)
+  priority Priority      @default(MEDIUM)
 
   startDate DateTime?
   dueDate   DateTime?
 
-  ownerId   String?
-  owner     User? @relation(fields: [ownerId], references: [id])
+  ownerId String?
+  owner   User?   @relation(fields: [ownerId], references: [id])
 
   tasks     Task[]
   members   ProjectMember[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
 }
 
 model Task {
-  id          Int       @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   title       String
   description String?
 
-  projectId   Int?
-  project     Project?  @relation(fields: [projectId], references: [id])
+  projectId Int?
+  project   Project? @relation(fields: [projectId], references: [id])
 
-  createdBy   String?
-  creator     User?     @relation("TaskCreator", fields: [createdBy], references: [id])
+  createdBy String?
+  creator   User?   @relation("TaskCreator", fields: [createdBy], references: [id])
 
-  assignedTo  String?
-  assignee    User?     @relation("TaskAssignee", fields: [assignedTo], references: [id])
+  assignedTo String?
+  assignee   User?   @relation("TaskAssignee", fields: [assignedTo], references: [id])
 
-  status      TaskStatus   @default(PENDING)
-  priority    Priority @default(MEDIUM)
+  status   TaskStatus @default(PENDING)
+  priority Priority   @default(MEDIUM)
 
   startDate   DateTime?
   dueDate     DateTime?
   completedAt DateTime?
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   statusHistory TaskStatusHistory[]
@@ -145,49 +144,49 @@ model Task {
 }
 
 model TaskStatusHistory {
-  id        Int        @id @default(autoincrement())
-  taskId    Int
-  task      Task       @relation(fields: [taskId], references: [id])
+  id     Int  @id @default(autoincrement())
+  taskId Int
+  task   Task @relation(fields: [taskId], references: [id])
 
   oldStatus TaskStatus?
   newStatus TaskStatus
 
   changedBy String?
-  user      User?      @relation(fields: [changedBy], references: [id])
+  user      User?   @relation(fields: [changedBy], references: [id])
 
   comment   String?
-  createdAt DateTime   @default(now())
+  createdAt DateTime @default(now())
 }
 
 model TaskSubmission {
-  id          Int      @id @default(autoincrement())
-  taskId      Int
-  task        Task     @relation(fields: [taskId], references: [id])
+  id     Int  @id @default(autoincrement())
+  taskId Int
+  task   Task @relation(fields: [taskId], references: [id])
 
   submittedBy String
   submitter   User?    @relation("SubmissionByUser", fields: [submittedBy], references: [id])
-  comment     String?  // Employee submission note
+  comment     String? // Employee submission note
   submittedAt DateTime @default(now())
   files       String[]
   link        String?
 
-  reviewedBy  String?
-  reviewer    User?    @relation("ReviewedByAdmin", fields: [reviewedBy], references: [id])
-  reviewStatus SubmissionStatus?
+  reviewedBy    String?
+  reviewer      User?             @relation("ReviewedByAdmin", fields: [reviewedBy], references: [id])
+  reviewStatus  SubmissionStatus?
   reviewComment String?
-  reviewedAt   DateTime?
+  reviewedAt    DateTime?
 }
 
 model ProjectMember {
-  id        Int     @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   userId    String
   projectId Int
 
-  user      User    @relation(fields: [userId], references: [id])
-  project   Project @relation(fields: [projectId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  project Project @relation(fields: [projectId], references: [id])
 
-  role      String? // optional (admin, member)
+  role String? // optional (admin, member)
 
   @@unique([userId, projectId]) // prevents duplicates
 }

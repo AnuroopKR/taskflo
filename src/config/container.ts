@@ -35,7 +35,7 @@ const mailProvider=new NodemailerMailProvider()
 const otpGenerator= new RandomOtpGenerator()
 const otpRepo=new OTPRepositoryImpl()
 const tokenService = new JwtService(   process.env.JWT_ACCESS_SECRET || "default_access_secret",
-  process.env.JWT_REFRESH_SECRET || "default_refresh_secret");
+  process.env.JWT_REFRESH_SECRET || "default_refresh_secret",process.env.JWT_EMAIL_SECRET||"default_email_secret");
 const taskRepo=new TaskRepositoryImpl()
 const statusRepo=new TaskStatusHistoryRepositoryImpl
 const projectRepo=new ProjectRepositoryImpl;
@@ -48,7 +48,8 @@ export const registerUseCase = new companyRegisterUseCase(
   passwordHasher,
   mailProvider,
   otpGenerator,
-  otpRepo
+  otpRepo,
+  tokenService
 );
 
 export const loginUserUseCase = new UserLoginUseCase(
@@ -58,7 +59,9 @@ export const loginUserUseCase = new UserLoginUseCase(
 );
 
 export const verifyOtpUseCase=new VerifyOtpUseCase(
-  otpRepo
+  otpRepo,
+  tokenService,
+  userRepo
 )
 
 export const createUserUSEcase=new CreateUserUseCase(
