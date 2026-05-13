@@ -123,7 +123,6 @@ export class AuthController {
   verifyToken = async (req: Request, res: Response) => {
     try {
       const user = req.user;
-      console.log(888, user);
       res.status(200).json({ message: "success" });
     } catch (error) {
       console.log(error);

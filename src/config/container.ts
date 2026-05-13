@@ -116,7 +116,8 @@ export const getProjectMembersUseCase=new GetProjectMembersUseCase(
 
 export const setPasswordUseCase=new SetpasswordUseCase(
   otpRepo,
-  userRepo
+  userRepo,
+  passwordHasher
 )
 
 export const getUserUseCase=new GetUserUseCase(

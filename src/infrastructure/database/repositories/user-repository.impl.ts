@@ -25,6 +25,7 @@ export class userRepositoryImpl implements IUserRepository {
     name: string;
     email: string;
     role: PrismaRoleType;
+    isVerified: boolean;
     password: string | null;
   }): User {
     return new User(
@@ -33,24 +34,26 @@ export class userRepositoryImpl implements IUserRepository {
       record.name,
       record.email,
       record.role as DomainRoleType,
+      record.isVerified,
       record.password ?? undefined,
     );
   }
   private mapToUserWithRelations(record: UserWithInclude): UserWithRelations {
-  return {
-    id: record.id,
-    companyId: record.companyId,
-    name: record.name,
-    email: record.email,
-    role: record.role,
+    return {
+      id: record.id,
+      companyId: record.companyId,
+      name: record.name,
+      email: record.email,
+      role: record.role,
+      isVerified: record.isVerified,
 
-    projects: record.projects.map((p: any) => p.project),
+      projects: record.projects.map((p: any) => p.project),
 
-    tasks: record.assignedTasks,
+      tasks: record.assignedTasks,
 
-    company: record.company,
-  };
-}
+      company: record.company,
+    };
+  }
   async create(data: userProps): Promise<User> {
     const userRecord = await prisma.user.create({
       data: {
@@ -63,24 +66,24 @@ export class userRepositoryImpl implements IUserRepository {
     });
     return this.mapToEntity(userRecord);
   }
-async findById(id: string): Promise<UserWithRelations | null> {
-  const userRecord = await prisma.user.findUnique({
-    where: { id },
-    include: {
-      projects: {
-        include: {
-          project: true,
+  async findById(id: string): Promise<UserWithRelations | null> {
+    const userRecord = await prisma.user.findUnique({
+      where: { id },
+      include: {
+        projects: {
+          include: {
+            project: true,
+          },
         },
+        assignedTasks: true,
+        company: true,
       },
-      assignedTasks: true,
-      company: true,
-    },
-  });
+    });
 
-  if (!userRecord) return null;
+    if (!userRecord) return null;
 
-  return this.mapToUserWithRelations(userRecord);
-}
+    return this.mapToUserWithRelations(userRecord);
+  }
 
   async findByEmail(email: string): Promise<User | null> {
     const userRecord = await prisma.user.findUnique({ where: { email } });
@@ -92,43 +95,43 @@ async findById(id: string): Promise<UserWithRelations | null> {
       data: { password },
     });
   }
- async findByCompanyId(companyId: string):Promise<UserWithRelations[]> {
-  const users = await prisma.user.findMany({
-    where: { companyId },
-    include: {
-      projects: {
-        include: {
-          project: true,
+  async findByCompanyId(companyId: string): Promise<UserWithRelations[]> {
+    const users = await prisma.user.findMany({
+      where: { companyId },
+      include: {
+        projects: {
+          include: {
+            project: true,
+          },
         },
+        assignedTasks: true,
+        company: true,
       },
-      assignedTasks: true,
-      company: true,
-    },
-  });
+    });
 
-  console.log("DEBUG USERS:", JSON.stringify(users, null, 2));
+    console.log("DEBUG USERS:", JSON.stringify(users, null, 2));
 
-  return users.map((user) => ({
-    id: user.id,
-    companyId:user.companyId,
-    name: user.name,
-    email: user.email,
-    role: user.role,
+    return users.map((user) => ({
+      id: user.id,
+      companyId: user.companyId,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      isVerified: user.isVerified,
+      projects: user.projects.map((p) => p.project),
+      tasks: user.assignedTasks,
 
-    projects: user.projects.map((p) => p.project),
-    tasks: user.assignedTasks,
-
-    company: user.company, // 👈 check this
-  }));
-}
-async verifyUser(email: string): Promise<void> {
-  await prisma.user.update({
-    where: {
-      email,
-    },
-    data: {
-      isVerified: true,
-    },
-  });
-}
+      company: user.company, // 👈 check this
+    }));
+  }
+  async verifyUser(email: string): Promise<void> {
+    await prisma.user.update({
+      where: {
+        email,
+      },
+      data: {
+        isVerified: true,
+      },
+    });
+  }
 }

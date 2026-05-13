@@ -8,6 +8,7 @@ export class User {
     public name: string,
     public email: string,
     public role: RoleType,
+    public isVerified:boolean,
     public password?: string,
   ) {
     this.name = name.trim(); // Logic: Names shouldn't have trailing spaces

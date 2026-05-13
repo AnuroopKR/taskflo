@@ -6,6 +6,7 @@ export type UserWithRelations = {
   name: string;
   email: string;
   role: string;
+  isVerified:boolean;
   projects: any[];
   tasks: any[];
   company: any;

@@ -15,9 +15,9 @@ export class UserLoginUseCase{
 
     async execute(data:LoginRequest):Promise<LoginResponseDto>{
         const {email,password}=data
-        console.log(555,email,password) 
         const user=await this.userRepo.findByEmail(email)
-        if(!user) throw new NotFoundError("user not found")
+        console.log(111,user)
+        if(!user||!user.isVerified) throw new NotFoundError("user not found")
         const isMatch=await this.passwordHasher.compare(password,user.password??"")
         if(!isMatch) throw new UnauthorizedError("invalied credential")
         
