@@ -9,6 +9,7 @@ route.post("/login",authController.login)
 route.post("/set-password",authController.setPassword)
 route.get("/verify-token",authMiddleware,authController.verifyToken)
 route.post('/verify-otp',authController.verifyotp)
+route.get('/me',authMiddleware,authController.getMe)
 
 
 export default route;

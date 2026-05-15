@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { companyRegisterUseCase } from "../../application/company/register/register-company.use-case";
 import {
+  getUserByIdUseCase,
   loginUserUseCase,
   registerUseCase,
   setPasswordUseCase,
@@ -9,6 +10,7 @@ import {
 import { UserLoginUseCase } from "../../application/user/login/login-user-use-case";
 import { VerifyOtpUseCase } from "../../application/auth/verify-otp/verify-otp-use-case";
 import { SetpasswordUseCase } from "../../application/auth/set-password/set-password-use-case";
+import { GetUserByIdUseCase } from "../../application/user/get-user-by-id/get-user-byid-use-case";
 
 export class AuthController {
   constructor(
@@ -16,12 +18,14 @@ export class AuthController {
     private loginUseCase: UserLoginUseCase,
     private verifyOtpUsecase: VerifyOtpUseCase,
     private setPasswordUseCase: SetpasswordUseCase,
+    private getUserByIdUseCase: GetUserByIdUseCase,
   ) {}
 
   register = async (req: Request, res: Response) => {
     try {
-      const {user,company,otp,emailToken} = await this.registerUseCase.execute(req.body);
-      res.status(200).json({user,emailToken});
+      const { user, company, otp, emailToken } =
+        await this.registerUseCase.execute(req.body);
+      res.status(200).json({ user, emailToken });
     } catch (error: any) {
       res.status(error.statusCode || 500).json({ message: error.message });
     }
@@ -63,7 +67,7 @@ export class AuthController {
   verifyotp = async (req: Request, res: Response) => {
     try {
       const { token, code } = req.body;
-      console.log(token,code)
+      console.log(token, code);
       if (!token || !code) {
         return res.status(400).json({
           success: false,
@@ -107,7 +111,6 @@ export class AuthController {
 
   setPassword = async (req: Request, res: Response) => {
     try {
-      
       const result = this.setPasswordUseCase.execute(req.body);
 
       return res.status(200).json({
@@ -129,6 +132,18 @@ export class AuthController {
       res.status(500).json({ message: "internal server error" });
     }
   };
+
+  getMe = async (req: Request, res: Response) => {
+    try {
+      const id = req.user?.id
+      if(!id) return res.status(401).json({ message: "Authentication failed" })
+      const userData = await this.getUserByIdUseCase.execute(id);
+      res.status(200).json(userData);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "internal server error" });
+    }
+  };
 }
 
 const authController = new AuthController(
@@ -136,6 +151,7 @@ const authController = new AuthController(
   loginUserUseCase,
   verifyOtpUseCase,
   setPasswordUseCase,
+  getUserByIdUseCase
 );
 
 export { authController };
